@@ -403,14 +403,14 @@ class Customer(StripeCustomer):
                 trial_end=timezone.now() + datetime.timedelta(days=trial_days),
                 prorate=prorate,
                 quantity=quantity,
-                tax_percent='13.00',
+                tax_percent=0.13,
             )
         else:
             resp = stripe_customer.update_subscription(
                 plan=djstripe_settings.PAYMENTS_PLANS[plan]["stripe_plan_id"],
                 prorate=prorate,
                 quantity=quantity
-                tax_percent='13.00',
+                tax_percent=0.13,
             )
         self.sync_current_subscription()
         if charge_immediately:
