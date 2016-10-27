@@ -344,7 +344,8 @@ class Customer(StripeCustomer):
                     cancel_at_period_end=stripe_subscription.cancel_at_period_end,
                     canceled_at=convert_tstamp(stripe_subscription, "canceled_at"),
                     start=convert_tstamp(stripe_subscription.start),
-                    quantity=stripe_subscription.quantity
+                    quantity=stripe_subscription.quantity,
+                    tax_percent=0.13,
                 )
 
             if stripe_subscription.trial_start and stripe_subscription.trial_end:
@@ -403,14 +404,12 @@ class Customer(StripeCustomer):
                 trial_end=timezone.now() + datetime.timedelta(days=trial_days),
                 prorate=prorate,
                 quantity=quantity,
-                tax_percent=0.13,
             )
         else:
             resp = stripe_customer.update_subscription(
                 plan=djstripe_settings.PAYMENTS_PLANS[plan]["stripe_plan_id"],
                 prorate=prorate,
                 quantity=quantity
-                tax_percent=0.13,
             )
         self.sync_current_subscription()
         if charge_immediately:
